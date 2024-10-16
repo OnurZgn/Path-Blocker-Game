@@ -3,12 +3,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Stack;
 import java.util.LinkedList;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.FileReader;
 import javax.imageio.ImageIO;
-
 import java.util.Queue;
 
 class Board {
@@ -29,6 +29,32 @@ class Board {
         this.row = position[0];
     }
 
+}
+
+class DFS {
+    ArrayList<State> dfs(State iniState) {
+        Stack<State> stack = new Stack<>();
+        stack.add(iniState);
+        while (!stack.isEmpty()) {
+            State state = stack.pop();
+            if (state.checkState()) {
+                System.out.println("DFS caught the goal!");
+                ArrayList<State> path = new ArrayList<>();
+                State node = state;
+
+                while (node != null) {
+                    path.add(node);
+                    node = node.parent;
+                }
+                return path;
+            }
+
+            for (State child : state.getChildren()) {
+                stack.push(child);
+            }
+        }
+        return null;
+    }
 }
 
 class BFS {
