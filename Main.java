@@ -91,6 +91,75 @@ class BFS {
 
 }
 
+class DLS {
+    ArrayList<State> dls(State initState, int limit) {
+        return recursiveDLS(initState, limit);     // Call the recursive depth-limited search function
+    }
+
+    private ArrayList<State> recursiveDLS(State state, int limit) {
+        if (state.checkState()) {                       // If goal is found
+            System.out.println("DLS caught the goal!");
+            ArrayList<State> path = new ArrayList<>();
+            State node = state;
+            while (node != null) {
+                path.add(node); 
+                node = node.parent; 
+            }
+            return path;
+        }
+        
+        if (limit <= 0) {                    // If depth limit reached, stop further exploration
+            return null; 
+        }
+
+        for (State child : state.getChildren()) {
+            ArrayList<State> result = recursiveDLS(child, limit - 1); // Recursive call with reduced limit
+            if (result != null) {
+                return result; 
+            }
+        }
+        return null; 
+    }
+}
+
+class IDS {
+    ArrayList<State> ids(State initState, int maxDepth) {
+        for (int i = 0; i <= maxDepth; i++) {        // i = depth
+            System.out.println("Current searching depth limit: " + i);
+            ArrayList<State> result = dls(initState, i);
+            if (result != null) {
+                System.out.println("IDS caught the goal in depth" + i);
+                return result; 
+            }
+        }
+        return null;
+    }
+
+    private ArrayList<State> dls(State state, int limit) {
+        if (state.checkState()) {       // If goal is found
+            ArrayList<State> path = new ArrayList<>();
+            State node = state;
+            while (node != null) {
+                path.add(node); 
+                node = node.parent; 
+            }
+            return path; 
+        }
+       
+        if (limit <= 0) {       // If depth limit reached, stop further exploration
+            return null;
+        }
+
+        for (State child : state.getChildren()) {
+            ArrayList<State> result = dls(child, limit - 1); // Recursive call with reduced limit
+            if (result != null) {
+                return result; 
+            }
+        }
+        return null; 
+    }
+}
+
 enum MOVE {
     UP,
     DOWN,
