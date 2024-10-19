@@ -77,7 +77,6 @@ class BFS {
                 }
 
                 return path;
-
             }
             // we are in the goal
 
@@ -293,7 +292,7 @@ public class Main {
     static ArrayList<char[][]> loadLevels() {
         final int numOfLevels = 10;
         ArrayList<char[][]> levels = new ArrayList<>();
-        for (int i = 1; i <= 2; i++) {
+        for (int i = 1; i <= numOfLevels; i++) {
             /*
              * StringBuffer fileName = new StringBuffer("levels/level");
              * fileName.append(Integer.toString(i)).append(".txt");
