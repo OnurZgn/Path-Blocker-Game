@@ -1,7 +1,5 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+<<<<<<< HEAD
 import java.util.Arrays;
 import java.util.Stack;
 import java.util.LinkedList;
@@ -286,123 +284,35 @@ class State {
     }
 
 }
+=======
+>>>>>>> e8690a493a02293620644932a55bda74f026c635
 
 public class Main {
 
     public static void main(String[] args) {
 
+<<<<<<< HEAD
         ArrayList<char[][]> levels = loadLevels();       
         System.out.println(levels.size());
         int i = 1;
         for (var level : levels) {            // creates a game board for each level and visualizes if a solution is exist.
             Board board = new Board(level, findInitialLocation(level));
+=======
+        ArrayList<char[][]> levels = (new Level()).loadLevels();
+        Visuals visual = new Visuals();
+        System.out.println(levels.size());
+        int i = 1;
+        for (var level : levels) {
+            Board board = new Board(level);
+>>>>>>> e8690a493a02293620644932a55bda74f026c635
             State state = new State(board, null, null);
             BFS solver = new BFS();
             ArrayList<State> path = solver.bfs(state);
             if (path != null) {
                 System.out.println(path.size());
-                visualizePath(path, i);
+                visual.visualizePath(path, i);
             }
             i++;
-        }
-    }
-
-    static void visualizePath(ArrayList<State> path, int level) {
-        int rectSize = 50;
-
-        String folderName = String.format("Images/level%02d", level);
-        File folder = new File(folderName);
-        if (!folder.exists()) {
-            folder.mkdirs();
-        }
-
-        for (int nodei = path.size() - 1; nodei >= 0; nodei--) {
-            BufferedImage image = new BufferedImage(rectSize * path.get(nodei).board.matrix.length,
-                    rectSize * path.get(nodei).board.matrix[0].length,
-                    BufferedImage.TYPE_INT_RGB);
-            Graphics2D g = image.createGraphics();
-
-            for (int i = path.get(nodei).board.matrix.length - 1; i >= 0; i--) {
-                for (int j = path.get(nodei).board.matrix[i].length - 1; j >= 0; j--) {
-                    g.setColor(getColor(path.get(nodei).board.matrix[i][j]));
-                    g.fillRect(j * rectSize, i * rectSize, rectSize, rectSize);
-                }
-            }
-            g.dispose();
-
-            try {
-                String fileName = String.format("%s/%04d.png", folderName, path.size() - nodei);
-                File levelFile = new File(fileName);
-                ImageIO.write(image, "png", levelFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    static int[] findInitialLocation(char[][] matrix) {
-
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[i].length; j++) {
-                if (matrix[i][j] == State.player) {
-                    int[] arr = { i, j };
-                    System.out.println(Arrays.toString(arr));
-                    return arr;
-                }
-            }
-
-        }
-        return null;
-    }
-
-    static ArrayList<char[][]> loadLevels() {
-        final int numOfLevels = 10;
-        ArrayList<char[][]> levels = new ArrayList<>();
-        for (int i = 1; i <= numOfLevels; i++) {
-            /*
-             * StringBuffer fileName = new StringBuffer("levels/level");
-             * fileName.append(Integer.toString(i)).append(".txt");
-             */
-            String fileName = String.format("Levels/level%02d.txt", i);
-
-            levels.add(readLevel(fileName));
-        }
-
-        return levels;
-    }
-
-    static char[][] readLevel(String fileName) {
-        ArrayList<char[]> level = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                level.add(line.replace(",", "").toCharArray());
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return level.toArray(new char[level.size()][]);
-    }
-
-    static Color getColor(char tile) {
-        final char emptyTile = '0';
-        final char wall = '1';
-        final char player = '2';
-        final char goal = '3';
-        Color playerColor = new Color(248, 204, 68), goalColor = Color.red, wallColor = new Color(56, 12, 100),
-                emptyTileColor = new Color(136, 140, 236);
-        switch (tile) {
-            case emptyTile:
-                return emptyTileColor;
-            case wall:
-                return wallColor;
-            case player:
-                return playerColor;
-            case goal:
-                return goalColor;
-            default:
-                return null;
         }
     }
 
