@@ -1,6 +1,8 @@
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Stack;
@@ -8,6 +10,8 @@ import java.util.LinkedList;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.util.Collections;
 import javax.imageio.ImageIO;
 import java.util.Queue;
 
@@ -31,135 +35,6 @@ class Board {
 
 }
 
-class DFS {
-    ArrayList<State> dfs(State iniState) {
-        Stack<State> stack = new Stack<>();
-        stack.add(iniState);
-        while (!stack.isEmpty()) {
-            State state = stack.pop();
-            if (state.checkState()) {
-                System.out.println("DFS caught the goal!");
-                ArrayList<State> path = new ArrayList<>();
-                State node = state;
-
-                while (node != null) {
-                    path.add(node);
-                    node = node.parent;
-                }
-                return path;
-            }
-
-            for (State child : state.getChildren()) {
-                stack.push(child);
-            }
-        }
-        return null;
-    }
-}
-
-class BFS {
-    // Tree bfs
-    ArrayList<State> bfs(State initState) {
-        Queue<State> queue = new LinkedList<>();
-        queue.add(initState);
-        while (!queue.isEmpty()) {
-            State stat = queue.poll();
-            // State.printBoard(stat.board);
-            if (stat.checkState()) {
-
-                System.out.println("BFS caught the goal!");
-                State node = stat;
-                ArrayList<State> path = new ArrayList<>(); // Initialize the path list
-
-                while (node != null) { // Change to check if node is null
-                    path.add(node); // Add the current node to the path
-                    node = node.parent; // Move to the parent
-                }
-
-                return path;
-            }
-            // we are in the goal
-
-            for (var child : stat.getChildren()) {
-                // child.printBoard(child.board);
-                queue.add(child);
-            }
-        }
-
-        return null; // NO SOLUTION FOUND
-    }
-
-}
-
-class DLS {
-    ArrayList<State> dls(State initState, int limit) {
-        return recursiveDLS(initState, limit);     // Call the recursive depth-limited search function
-    }
-
-    private ArrayList<State> recursiveDLS(State state, int limit) {
-        if (state.checkState()) {                       // If goal is found
-            System.out.println("DLS caught the goal!");
-            ArrayList<State> path = new ArrayList<>();
-            State node = state;
-            while (node != null) {
-                path.add(node); 
-                node = node.parent; 
-            }
-            return path;
-        }
-        
-        if (limit <= 0) {                    // If depth limit reached, stop further exploration
-            return null; 
-        }
-
-        for (State child : state.getChildren()) {
-            ArrayList<State> result = recursiveDLS(child, limit - 1); // Recursive call with reduced limit
-            if (result != null) {
-                return result; 
-            }
-        }
-        return null; 
-    }
-}
-
-class IDS {
-    ArrayList<State> ids(State initState, int maxDepth) {
-        for (int i = 0; i <= maxDepth; i++) {        // i = depth
-            System.out.println("Current searching depth limit: " + i);
-            ArrayList<State> result = dls(initState, i);
-            if (result != null) {
-                System.out.println("IDS caught the goal in depth" + i);
-                return result; 
-            }
-        }
-        return null;
-    }
-
-    private ArrayList<State> dls(State state, int limit) {
-        if (state.checkState()) {       // If goal is found
-            ArrayList<State> path = new ArrayList<>();
-            State node = state;
-            while (node != null) {
-                path.add(node); 
-                node = node.parent; 
-            }
-            return path; 
-        }
-       
-        if (limit <= 0) {       // If depth limit reached, stop further exploration
-            return null;
-        }
-
-        for (State child : state.getChildren()) {
-            ArrayList<State> result = dls(child, limit - 1); // Recursive call with reduced limit
-            if (result != null) {
-                return result; 
-            }
-        }
-        return null; 
-    }
-}
-
 enum MOVE {
     UP,
     DOWN,
@@ -177,18 +52,23 @@ class State {
     public Board board;
     MOVE lastMove;
     State parent = null;
+    int depth = 0;
     // children ?
 
     public State(Board board, MOVE lastMove, State parent) {
         this.board = board;
         this.lastMove = lastMove;
         this.parent = parent;
+        if (parent != null) {
+            this.depth = parent.depth + 1;
+
+        } else
+            System.out.println("z");
     }
 
     public ArrayList<State> getChildren() {
 
         ArrayList<State> states = new ArrayList<>();
-        System.out.println(possibleMoves(board).size());
         for (MOVE element : possibleMoves(board)) {
 
             char[][] clonedMatrix = new char[board.matrix.length][];
@@ -206,11 +86,11 @@ class State {
     }
 
     public boolean checkState() {
-        System.out.println("Checking state");
+        // System.out.println("Checking state");
         // returns true if the player is at goal;
         if (board.matrix[board.row][board.column] == State.goal) {
             board.matrix[board.row][board.column] = State.player;
-            System.out.println("I caught the goal");
+            // System.out.println("I caught the goal");
             return true;
         } else
             return false;
@@ -230,16 +110,16 @@ class State {
     }
 
     public static ArrayList<MOVE> possibleMoves(Board board) {
-
         int row = board.row;
         int column = board.column;
 
         ArrayList<MOVE> moves = new ArrayList<>();
-        if (board.matrix[row + 1][column] == emptyTile || board.matrix[row + 1][column] == goal) {
-            moves.add(MOVE.DOWN);
-        }
+
         if (board.matrix[row - 1][column] == emptyTile || board.matrix[row - 1][column] == goal) {
             moves.add(MOVE.UP);
+        }
+        if (board.matrix[row + 1][column] == emptyTile || board.matrix[row + 1][column] == goal) {
+            moves.add(MOVE.DOWN);
         }
         if (board.matrix[row][column + 1] == emptyTile || board.matrix[row][column + 1] == goal) {
             moves.add(MOVE.RIGHT);
@@ -248,6 +128,8 @@ class State {
             moves.add(MOVE.LEFT);
         }
 
+        // Shuffle the list of moves
+        // Collections.shuffle(moves);
         return moves;
     }
 
@@ -283,7 +165,7 @@ class State {
             board.matrix[board.row][board.column] = wall;
             board.row += dy;
             board.column += dx;
-            System.out.println("goal");
+            // System.out.println("goal");
         } // goal
 
     }
@@ -293,87 +175,54 @@ class State {
 public class Main {
 
     public static void main(String[] args) {
-
+        // Load the levels from files
         ArrayList<char[][]> levels = loadLevels();
-        System.out.println(levels.size());
-        int i = 1;
+        System.out.println("Number of levels loaded: " + levels.size());
+
+        // Solve each level using BFS and DFS
+        int levelIndex = 1;
         for (var level : levels) {
+            // Initialize the board with the current level
             Board board = new Board(level, findInitialLocation(level));
-            State state = new State(board, null, null);
-            BFS solver = new BFS();
-            ArrayList<State> path = solver.bfs(state);
-            if (path != null) {
-                System.out.println(path.size());
-                visualizePath(path, i);
-            }
-            i++;
+            State initialState = new State(board, null, null);
+
+            // Solve using BFS
+            BFS bfsSolver = new BFS();
+            bfsSolver.bfs(initialState, levelIndex);
+
+            // Solve using DFS
+            DFS dfsSolver = new DFS();
+            dfsSolver.dfs(initialState, levelIndex);
+
+            // Increment the level index for the next iteration
+            levelIndex++;
         }
     }
 
-    static void visualizePath(ArrayList<State> path, int level) {
-        int rectSize = 50;
-
-        String folderName = String.format("Images/level%02d", level);
-        File folder = new File(folderName);
-        if (!folder.exists()) {
-            folder.mkdirs();
-        }
-
-        for (int nodei = path.size() - 1; nodei >= 0; nodei--) {
-            BufferedImage image = new BufferedImage(rectSize * path.get(nodei).board.matrix.length,
-                    rectSize * path.get(nodei).board.matrix[0].length,
-                    BufferedImage.TYPE_INT_RGB);
-            Graphics2D g = image.createGraphics();
-
-            for (int i = path.get(nodei).board.matrix.length - 1; i >= 0; i--) {
-                for (int j = path.get(nodei).board.matrix[i].length - 1; j >= 0; j--) {
-                    g.setColor(getColor(path.get(nodei).board.matrix[i][j]));
-                    g.fillRect(j * rectSize, i * rectSize, rectSize, rectSize);
-                }
-            }
-            g.dispose();
-
-            try {
-                String fileName = String.format("%s/%04d.png", folderName, path.size() - nodei);
-                File levelFile = new File(fileName);
-                ImageIO.write(image, "png", levelFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
+    // Method to find the initial location of the player
     static int[] findInitialLocation(char[][] matrix) {
-
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
                 if (matrix[i][j] == State.player) {
-                    int[] arr = { i, j };
-                    System.out.println(Arrays.toString(arr));
-                    return arr;
+                    return new int[] { i, j }; // Return the found location
                 }
             }
-
         }
-        return null;
+        return null; // Return null if not found
     }
 
+    // Method to load levels from text files
     static ArrayList<char[][]> loadLevels() {
-        final int numOfLevels = 10;
+        final int numOfLevels = 14;
         ArrayList<char[][]> levels = new ArrayList<>();
         for (int i = 1; i <= numOfLevels; i++) {
-            /*
-             * StringBuffer fileName = new StringBuffer("levels/level");
-             * fileName.append(Integer.toString(i)).append(".txt");
-             */
             String fileName = String.format("Levels/level%02d.txt", i);
-
             levels.add(readLevel(fileName));
         }
-
-        return levels;
+        return levels; // Return the loaded levels
     }
 
+    // Method to read a single level from a file
     static char[][] readLevel(String fileName) {
         ArrayList<char[]> level = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
@@ -381,32 +230,10 @@ public class Main {
             while ((line = br.readLine()) != null) {
                 level.add(line.replace(",", "").toCharArray());
             }
-
         } catch (IOException e) {
+            System.err.println("Error reading level file: " + fileName);
             e.printStackTrace();
         }
         return level.toArray(new char[level.size()][]);
     }
-
-    static Color getColor(char tile) {
-        final char emptyTile = '0';
-        final char wall = '1';
-        final char player = '2';
-        final char goal = '3';
-        Color playerColor = new Color(248, 204, 68), goalColor = Color.red, wallColor = new Color(56, 12, 100),
-                emptyTileColor = new Color(136, 140, 236);
-        switch (tile) {
-            case emptyTile:
-                return emptyTileColor;
-            case wall:
-                return wallColor;
-            case player:
-                return playerColor;
-            case goal:
-                return goalColor;
-            default:
-                return null;
-        }
-    }
-
 }
