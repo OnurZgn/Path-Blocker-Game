@@ -12,26 +12,26 @@ public class State {
         this.parent = parent;
     }
 
-    public ArrayList<State> getChildren() {
+    public ArrayList<State> getChildren() {      // Keeps all possible situations that may occur after the current one
         ArrayList<State> states = new ArrayList<>();
         System.out.println(board.possibleMoves().size());
         for (MOVE element : board.possibleMoves()) {
             char[][] clonedMatrix = new char[board.matrix.length][];
             for (int i = 0; i < board.matrix.length; i++) {
-                clonedMatrix[i] = board.matrix[i].clone();
+                clonedMatrix[i] = board.matrix[i].clone(); // Moves will be made on duplicate matrices without disturbing the board
             }
-            // Should clone the current board and use adjustMoves function on it;
-            Board newBoard = new Board(clonedMatrix, board.column, board.row);
-            newBoard.adjustMoveBoard(element);
-            State newChildState = new State(newBoard, element, this);
+            
+            Board newBoard = new Board(clonedMatrix, board.column, board.row); // A board is created for each clone
+            newBoard.adjustMoveBoard(element);  // and the moves are adjusted.
+            State newChildState = new State(newBoard, element, this);  // Creates updated State
             states.add(newChildState);
         }
         return states;
     }
 
-    public boolean checkState() {
+    public boolean checkState() {        //  returns true if the player is at goal;
         System.out.println("Checking state");
-        if (board.matrix[board.row][board.column] == board.goal) {         //  returns true if the player is at goal;
+        if (board.matrix[board.row][board.column] == board.goal) {        
             board.matrix[board.row][board.column] = board.player;
             System.out.println("I caught the goal");
             return true;

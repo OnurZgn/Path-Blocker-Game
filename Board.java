@@ -30,7 +30,7 @@ public class Board {
 
     }
 
-    int[] findInitialLocation(char[][] matrix) {
+    int[] findInitialLocation(char[][] matrix) {  // Finds the player's starting position in the level
 
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
@@ -44,7 +44,7 @@ public class Board {
         return null;
     }
 
-    void adjustMoveBoard(MOVE move) {
+    void adjustMoveBoard(MOVE move) {     
         int dx = 0;
         int dy = 0;
         switch (move) {     // Displacement is calculated according to the type of move
