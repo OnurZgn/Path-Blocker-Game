@@ -47,7 +47,7 @@ public class Board {
     void adjustMoveBoard(MOVE move) {
         int dx = 0;
         int dy = 0;
-        switch (move) {
+        switch (move) {     // Displacement is calculated according to the type of move
             case UP:
                 dy = -1;
                 break;
@@ -61,15 +61,15 @@ public class Board {
                 dx = -1;
                 break;
         }
-
-        while (matrix[row + dy][column + dx] != wall
-                && matrix[row + dy][column + dx] != goal) {
+ 
+        while (matrix[row + dy][column + dx] != wall      // Unless the wall or goal is reached in the selected move, 
+                && matrix[row + dy][column + dx] != goal) {   // progress is constant and the coordinates passed are marked as walls.
             matrix[row][column] = wall;
             row += dy;
             column += dx;
             matrix[row][column] = player;
         }
-        if (matrix[row + dy][column + dx] == goal) {
+        if (matrix[row + dy][column + dx] == goal) {    // If the goal is one unit further in the selected movement, the goal is reached.
             matrix[row][column] = wall;
             row += dy;
             column += dx;
@@ -77,7 +77,7 @@ public class Board {
         }
     }
 
-    ArrayList<MOVE> possibleMoves() {
+    ArrayList<MOVE> possibleMoves() {  // The moves that can be done are added in the ArrayList (if one unit distance is empty or goal)
         int row = this.row;
         int column = this.column;
         ArrayList<MOVE> moves = new ArrayList<>();
