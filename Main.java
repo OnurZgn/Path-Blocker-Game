@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-<<<<<<< HEAD
 import java.util.Arrays;
 import java.util.Stack;
 import java.util.LinkedList;
@@ -284,27 +283,16 @@ class State {
     }
 
 }
-=======
->>>>>>> e8690a493a02293620644932a55bda74f026c635
 
 public class Main {
 
     public static void main(String[] args) {
 
-<<<<<<< HEAD
         ArrayList<char[][]> levels = loadLevels();       
         System.out.println(levels.size());
         int i = 1;
         for (var level : levels) {            // creates a game board for each level and visualizes if a solution is exist.
             Board board = new Board(level, findInitialLocation(level));
-=======
-        ArrayList<char[][]> levels = (new Level()).loadLevels();
-        Visuals visual = new Visuals();
-        System.out.println(levels.size());
-        int i = 1;
-        for (var level : levels) {
-            Board board = new Board(level);
->>>>>>> e8690a493a02293620644932a55bda74f026c635
             State state = new State(board, null, null);
             BFS solver = new BFS();
             ArrayList<State> path = solver.bfs(state);
