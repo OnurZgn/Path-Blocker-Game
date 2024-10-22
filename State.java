@@ -20,6 +20,7 @@ public class State {
             for (int i = 0; i < board.matrix.length; i++) {
                 clonedMatrix[i] = board.matrix[i].clone();
             }
+            // Should clone the current board and use adjustMoves function on it;
             Board newBoard = new Board(clonedMatrix, board.column, board.row);
             newBoard.adjustMoveBoard(element);
             State newChildState = new State(newBoard, element, this);
@@ -30,7 +31,7 @@ public class State {
 
     public boolean checkState() {
         System.out.println("Checking state");
-        if (board.matrix[board.row][board.column] == board.goal) {
+        if (board.matrix[board.row][board.column] == board.goal) {         //  returns true if the player is at goal;
             board.matrix[board.row][board.column] = board.player;
             System.out.println("I caught the goal");
             return true;
