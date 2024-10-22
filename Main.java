@@ -160,7 +160,7 @@ class IDS {
     }
 }
 
-enum MOVE {
+enum MOVE {           //  Player movements are kept with enum class
     UP,
     DOWN,
     RIGHT,
@@ -177,7 +177,6 @@ class State {
     public Board board;
     MOVE lastMove;
     State parent = null;
-    // children ?
 
     public State(Board board, MOVE lastMove, State parent) {
         this.board = board;
@@ -207,8 +206,8 @@ class State {
 
     public boolean checkState() {
         System.out.println("Checking state");
-        // returns true if the player is at goal;
-        if (board.matrix[board.row][board.column] == State.goal) {
+        
+        if (board.matrix[board.row][board.column] == State.goal) {        //  returns true if the player is at goal;
             board.matrix[board.row][board.column] = State.player;
             System.out.println("I caught the goal");
             return true;
@@ -216,7 +215,6 @@ class State {
             return false;
     }
 
-    // Printing the board.
     public static void printBoard(Board board) {
 
         System.out.println("Board state:");
@@ -224,7 +222,7 @@ class State {
             for (int j = 0; j < board.matrix[i].length; j++) {
                 System.out.print(board.matrix[i][j] + " ");
             }
-            System.out.println(); // Move to the next line after each row
+            System.out.println(); 
         }
         System.out.println();
     }
@@ -234,7 +232,7 @@ class State {
         int row = board.row;
         int column = board.column;
 
-        ArrayList<MOVE> moves = new ArrayList<>();
+        ArrayList<MOVE> moves = new ArrayList<>();             // The moves that can be done are added in the ArrayList (if one unit distance is empty or goal)
         if (board.matrix[row + 1][column] == emptyTile || board.matrix[row + 1][column] == goal) {
             moves.add(MOVE.DOWN);
         }
@@ -257,7 +255,7 @@ class State {
         int dx = 0;
         int dy = 0;
 
-        switch (move) {
+        switch (move) {                   // Displacement is calculated according to the type of move
             case UP:
                 dy = -1;
                 break;
@@ -272,19 +270,18 @@ class State {
                 break;
         }
 
-        while (board.matrix[board.row + dy][board.column + dx] != wall
-                && board.matrix[board.row + dy][board.column + dx] != goal) {
-            board.matrix[board.row][board.column] = wall;
+        while (board.matrix[board.row + dy][board.column + dx] != wall      // Unless the wall or goal is reached in the selected move,
+                && board.matrix[board.row + dy][board.column + dx] != goal) {  // progress is constant and the coordinates passed are marked as walls.
             board.row += dy;
             board.column += dx;
             board.matrix[board.row][board.column] = player;
         }
-        if (board.matrix[board.row + dy][board.column + dx] == goal) {
+        if (board.matrix[board.row + dy][board.column + dx] == goal) {     // If the goal is one unit further in the selected movement, the goal is reached.       
             board.matrix[board.row][board.column] = wall;
             board.row += dy;
             board.column += dx;
             System.out.println("goal");
-        } // goal
+        } 
 
     }
 
@@ -294,10 +291,10 @@ public class Main {
 
     public static void main(String[] args) {
 
-        ArrayList<char[][]> levels = loadLevels();
+        ArrayList<char[][]> levels = loadLevels();       
         System.out.println(levels.size());
         int i = 1;
-        for (var level : levels) {
+        for (var level : levels) {            // creates a game board for each level and visualizes if a solution is exist.
             Board board = new Board(level, findInitialLocation(level));
             State state = new State(board, null, null);
             BFS solver = new BFS();
