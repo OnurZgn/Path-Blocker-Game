@@ -51,7 +51,7 @@ public class Visuals {
             g.dispose();
 
             try {
-                String fileName = String.format("%s/%04d.png", folderName, path.size() - nodei);
+                String fileName = String.format("%s/%04d.png", folderName, path.size() - nodei - 1);
                 File levelFile = new File(fileName);
                 ImageIO.write(image, "png", levelFile);
             } catch (IOException e) {
