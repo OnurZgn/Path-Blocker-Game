@@ -213,7 +213,7 @@ public class Main {
 
     // Method to load levels from text files
     static ArrayList<char[][]> loadLevels() {
-        final int numOfLevels = 14;
+        final int numOfLevels = 10;
         ArrayList<char[][]> levels = new ArrayList<>();
         for (int i = 1; i <= numOfLevels; i++) {
             String fileName = String.format("Levels/level%02d.txt", i);

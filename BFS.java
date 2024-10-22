@@ -1,4 +1,3 @@
-
 import java.io.File; // Import the File class
 import java.io.FileWriter;
 import java.io.IOException;
@@ -27,20 +26,23 @@ public class BFS {
             while (!queue.isEmpty()) {
                 State stat = queue.poll();
 
+                // Generate a unique node identifier using hashcode
+                String nodeId = String.valueOf(stat.hashCode());
+
                 if (stat.checkState()) {
                     // Write the node with red background for solutions
-                    writer.println("\"Solution" + stat.hashCode() + "\" [fillcolor=\"red\"];");
+                    writer.println("\"" + nodeId + "\" [label=\"" + stat.lastMove + "\", fillcolor=\"red\"];");
                     if (stat.parent != null) {
                         // Write the edge from parent to the current solution node
-                        writer.println("\"" + stat.parent.hashCode() + "\" -> \"Solution"
-                                + stat.hashCode() + "\";");
+                        writer.println("\"" + stat.parent.hashCode() + "\" -> \"" + nodeId + "\";");
                     }
                     break; // Found a solution
                 } else {
+                    // Write the node with the last move as the label
+                    writer.println("\"" + nodeId + "\" [label=\"" + stat.lastMove + "\"];");
                     if (stat.parent != null) {
                         // Write the edge from parent to the current node
-                        writer.println(
-                                "\"" + stat.parent.hashCode() + "\" -> \"" + stat.hashCode() + "\";");
+                        writer.println("\"" + stat.parent.hashCode() + "\" -> \"" + nodeId + "\";");
                     }
                     // Add children to the queue
                     for (var child : stat.getChildren()) {
@@ -48,6 +50,10 @@ public class BFS {
                     }
                 }
             }
+
+            // Write the closing bracket for the DOT file (if needed, depending on your use
+            // case)
+            // writer.println("}"); // Uncomment if you want to close the graph file here
 
         } catch (IOException e) {
             e.printStackTrace();
