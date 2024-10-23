@@ -28,7 +28,7 @@ public class Visuals {
     }
 
     void visualizePath(ArrayList<State> path, int level) {
-        int rectSize = 50;
+        int rectSize = 10;
 
         String folderName = String.format("Images/level%02d", level);
         File folder = new File(folderName);
