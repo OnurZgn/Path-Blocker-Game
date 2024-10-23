@@ -9,8 +9,6 @@ class BFS {
         while (!queue.isEmpty()) {
             State stat = queue.poll();
             if (stat.checkState()) {
-
-                System.out.println("BFS caught the goal!");
                 State node = stat;
                 ArrayList<State> path = new ArrayList<>();
 

@@ -9,7 +9,6 @@ public class Level {
         ArrayList<char[][]> levels = new ArrayList<>();
         for (int i = 1; i <= numOfLevels; i++) {
             String fileName = String.format("Levels/level%02d.txt", i);
-
             levels.add(readLevel(fileName));
         }
 

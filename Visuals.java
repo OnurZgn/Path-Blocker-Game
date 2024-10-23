@@ -6,24 +6,28 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 public class Visuals {
-    Color getColor(char tile) {
-        final char emptyTile = '0';
-        final char wall = '1';
-        final char player = '2';
-        final char goal = '3';
-        Color playerColor = new Color(248, 204, 68), goalColor = Color.red, wallColor = new Color(56, 12, 100),
-                emptyTileColor = new Color(136, 140, 236);
+    private Color getColor(char tile) {
         switch (tile) {
-            case emptyTile:
-                return emptyTileColor;
-            case wall:
-                return wallColor;
-            case player:
-                return playerColor;
-            case goal:
-                return goalColor;
+            case Board.emptyTile:
+                return new Color(136, 140, 236);
+            case Board.wall:
+                return new Color(56, 12, 100);
+            case Board.player:
+                return new Color(248, 204, 68);
+            case Board.goal:
+                return Color.red;
             default:
                 return null;
+        }
+    } 
+
+    private void saveImage(BufferedImage image, String folderName, int step) {
+        try {
+            String fileName = String.format("%s/%04d.png", folderName, step);
+            File levelFile = new File(fileName);
+            ImageIO.write(image, "png", levelFile);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -42,21 +46,17 @@ public class Visuals {
                     BufferedImage.TYPE_INT_RGB);
             Graphics2D g = image.createGraphics();
 
-            for (int i = path.get(nodei).board.matrix.length - 1; i >= 0; i--) {
-                for (int j = path.get(nodei).board.matrix[i].length - 1; j >= 0; j--) {
-                    g.setColor(getColor(path.get(nodei).board.matrix[i][j]));
+            char matrix[][] = path.get(nodei).board.matrix;
+
+            for (int i = 0; i < matrix.length; i++) {
+                for (int j = 0; j < matrix[i].length; j++) {
+                    g.setColor(getColor(matrix[i][j]));
                     g.fillRect(j * rectSize, i * rectSize, rectSize, rectSize);
                 }
             }
             g.dispose();
 
-            try {
-                String fileName = String.format("%s/%04d.png", folderName, path.size() - nodei - 1);
-                File levelFile = new File(fileName);
-                ImageIO.write(image, "png", levelFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            saveImage(image, folderName, path.size() - nodei - 1);
         }
     }
 }

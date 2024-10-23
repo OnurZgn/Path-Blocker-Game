@@ -2,13 +2,15 @@ import java.util.ArrayList;
 
 public class Board {
 
+    // A unique state of the board.
+    // Keeps track of the agent position and the map.
     public char[][] matrix;
     public int column;
     public int row;
-    final char emptyTile = '0';
-    final char wall = '1';
-    final char player = '2';
-    final char goal = '3';
+    final static char emptyTile = '0';
+    final static char wall = '1';
+    final static char player = '2';
+    final static char goal = '3';
 
     public Board(char[][] matrix, int column, int row) {
         this.matrix = matrix;
@@ -30,8 +32,8 @@ public class Board {
 
     }
 
-    int[] findInitialLocation(char[][] matrix) {  // Finds the player's starting position in the level
-
+    private int[] findInitialLocation(char[][] matrix) {
+        // Traveses the array to find "2" numbered tile, which is initial location.
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
                 if (matrix[i][j] == player) {
@@ -39,15 +41,14 @@ public class Board {
                     return arr;
                 }
             }
-
         }
         return null;
     }
 
-    void adjustMoveBoard(MOVE move) {     
+    void adjustMoveBoard(MOVE move) {
         int dx = 0;
         int dy = 0;
-        switch (move) {     // Displacement is calculated according to the type of move
+        switch (move) {
             case UP:
                 dy = -1;
                 break;
@@ -61,39 +62,45 @@ public class Board {
                 dx = -1;
                 break;
         }
- 
-        while (matrix[row + dy][column + dx] != wall      // Unless the wall or goal is reached in the selected move, 
-                && matrix[row + dy][column + dx] != goal) {   // progress is constant and the coordinates passed are marked as walls.
-            matrix[row][column] = wall;
-            row += dy;
-            column += dx;
+
+        while (matrix[row + dy][column + dx] != wall && matrix[row + dy][column + dx] != goal) {
+            addWall(dx, dy);
             matrix[row][column] = player;
         }
-        if (matrix[row + dy][column + dx] == goal) {    // If the goal is one unit further in the selected movement, the goal is reached.
-            matrix[row][column] = wall;
-            row += dy;
-            column += dx;
-            System.out.println("goal");
+
+        if (matrix[row + dy][column + dx] == goal) {
+            addWall(dx, dy);
         }
+
     }
 
-    ArrayList<MOVE> possibleMoves() {  // The moves that can be done are added in the ArrayList (if one unit distance is empty or goal)
-        int row = this.row;
-        int column = this.column;
+    void addWall(int x, int y) {
+        matrix[row][column] = wall;
+        row += y;
+        column += x;
+    }
+
+    ArrayList<MOVE> possibleMoves() {
+        // Returns a list of possible moves the agent can make.
+        // Maximum of two moves except for the first state.
         ArrayList<MOVE> moves = new ArrayList<>();
-        if (matrix[row + 1][column] == emptyTile || matrix[row + 1][column] == goal) {
-            moves.add(MOVE.DOWN);
-        }
-        if (matrix[row - 1][column] == emptyTile || matrix[row - 1][column] == goal) {
+
+        if (isMovable(row - 1, column)) {
             moves.add(MOVE.UP);
         }
-        if (matrix[row][column + 1] == emptyTile || matrix[row][column + 1] == goal) {
+        if (isMovable(row + 1, column)) {
+            moves.add(MOVE.DOWN);
+        }
+        if (isMovable(row, column + 1)) {
             moves.add(MOVE.RIGHT);
         }
-        if (matrix[row][column - 1] == emptyTile || matrix[row][column - 1] == goal) {
+        if (isMovable(row, column - 1)) {
             moves.add(MOVE.LEFT);
         }
         return moves;
     }
 
+    private boolean isMovable(int row, int column) {
+        return (matrix[row][column] == emptyTile || matrix[row][column] == goal);
+    }
 }
